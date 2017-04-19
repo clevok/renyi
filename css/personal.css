@@ -1,0 +1,58 @@
+._PERSONAL_CONTAINER {
+    padding-top: 30px;
+}
+
+.user-image {
+    width: 60px;
+    height: 60px;
+    background-color: #bdbdbd;
+    background-size: cover;
+    background-position: center center;
+
+    /*background-image: url("../img/user-image/flower.jpg");*/
+}
+.user-infrom {
+    list-style: none;
+    padding-left: 0;
+}
+.user-infrom >li {
+    padding: 0;
+}
+.bottom-nav {
+    margin-top: 35px;
+}
+
+.my-mission {
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding: 15px 0 0;
+}
+.mission-content {
+    vertical-align: top;
+    white-space: normal;
+    display: inline-block;
+    width: 30%;
+    padding: 0 15px 0 0;
+}
+.mission-more {
+    height: 60px;
+    border : 1px solid #cdcdcc;
+    background-image: url("../icon-svg/goright-gray.svg");
+    background-size: 50px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.content-image {
+    width: 100%;
+    height: 60px;
+    background-color: #bdbdbd;
+    background-size: cover;
+    background-position: center center;
+
+}
+
+.publish-btn {
+    float: right;
+    margin: 9px 0 0 0;
+}

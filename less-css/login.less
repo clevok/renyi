@@ -1,0 +1,59 @@
+@fontFamily : Latha ,'Microsoft Yahei';
+@infrom: rgb(146,146,145);
+@infrom-small: rgb(219, 219, 218);
+
+.border-none {
+  letter-spacing: 1px;
+  border-style: none;
+  outline: none;
+  font-family: @fontFamily;
+}
+.border-bottom {
+  border-style: none none solid none!important;
+}
+
+#wrap {
+  background-image: url("../img/bg.jpg");
+  background-position: 0% 0%;
+  background-size: cover;
+  >.row {
+    position: relative;
+  }
+}
+
+.loginContent {
+  position: absolute;
+  left: 0;
+}
+
+.loginFrom {
+  margin-top: 40px;
+}
+.login-area {
+  font-family: @fontFamily;
+  background-color: white;
+  padding: 14px 20px 0;
+  >input {
+    display: block;
+    width: 100%;
+    border-color: @infrom-small;
+    padding: 10px 0;
+    .border-none();
+  }
+}
+
+.form-login {
+  margin-top: 20px;
+}
+
+//按钮样式
+.login-btn {
+  width: 100%;
+  text-align: center;
+  background-color: white;
+  padding: 10px 0;
+  .border-none();
+}
+.hr {
+  text-align: center;
+}

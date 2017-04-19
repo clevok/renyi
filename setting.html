@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/setting.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css" />
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" ></button>
+    </header>
+    <div class="row clear_margin_right">
+        <div class="col-xs-12">
+            <h4 class="tx-nav">SETTING</h4>
+            <small class="tx-inform">设置</small>
+        </div>
+        <div class="col-xs-12 _SETTING_CONTAINER" id="_SETTING_CONTAINER">
+            <ul class="setting-ul tx-p">
+                <li @click="opensettingImage">修改头像
+                    <span class="glyphicon glyphicon-goright-gray go-next"></span>
+                </li>
+                <li @click="opensettingUserName">修改用户名
+                    <span class="glyphicon glyphicon-goright-gray go-next"></span>
+                </li>
+                <li @click="opensettingUserEmail">
+                	绑定邮箱
+                	<span class="glyphicon glyphicon-goright-gray go-next"></span>
+                </li>
+                <li @click="opensettingUserEmail">
+                	时光币充值
+                	<span class="glyphicon glyphicon-goright-gray go-next"></span>
+                </li>
+                <li @click="aboutUs">
+                	关于任意门
+                	<span class="glyphicon glyphicon-goright-gray go-next"></span>
+                </li>
+                <li class="clear-out" @click="clearOut">
+                	退出登录
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                plus.webview.close(w ,'slide-out-right' ,300);
+            }
+        }
+    });
+
+    new Vue({
+        el: '#_SETTING_CONTAINER',
+        data: {
+            nav : false
+        },
+        methods : {
+            clearOut : function () {
+                localStorage.clear();
+                plus.webview.close('_FIND' ,'slide-out-right' ,300);
+                plus.webview.close('_PERSONAL' ,'slide-out-right' ,300);
+                plus.webview.close('_NEWS' ,'slide-out-right' ,300);
+                plus.webview.close('_SETTING' ,'slide-out-right' ,300);
+            },
+            opensettingImage : function () {
+                renyi.webView.create('_settingImage', 'setting-image.html', {
+                    typeShow: 'slide-in-right',
+                    timeOut: 1,
+                    hideLeft: '0px',
+                    duration: 300
+                })
+            },
+            opensettingUserName : function () {
+                renyi.webView.create('_settingUserName', 'setting-user-name.html', {
+                    typeShow: 'slide-in-right',
+                    timeOut: 1,
+                    hideLeft: '0px',
+                    duration: 300
+                })
+            },
+            opensettingUserEmail : function () {
+                plus.nativeUI.toast( "暂未开发");
+            },
+            aboutUs : function () {
+            	alert('制作者邮箱 : 1029794653@qq.com');
+            }
+        }
+    });
+</script>
+</body>
+</html>

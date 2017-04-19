@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/find.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css"/>
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function () {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" ></button>
+    </header>
+    <div class="row clear_margin_right">
+        <div class="col-xs-12">
+            <h4 class="tx-nav">MY LIFE</h4>
+            <small class="tx-inform">我的发布</small>
+        </div>
+        <div class="col-xs-12 _FIND_CONTAINER" id="_FIND_CONTAINER">
+
+            <!--            <div class="col-xs-12 body-container">
+                            <div class="image-container"></div>
+
+                            <p class="main-text tx-p">hello i want e background color
+                                hello i want e background color
+                            </p>
+                            <p class="tx-tip address">浙江省温州市乐清市</p>
+                            <div class="user-container">
+                                <div class="user-image"></div>
+                                <span class="tx-inform">json</span>
+                                <button type="button" class="active-btn">抢单</button>
+                                <p class="margin_0">
+                                    <span class="tx-tip">1377km</span>&nbsp;&nbsp;&nbsp;
+                                    <span class="tx-tip">7小时前</span>
+                                </p>
+                            </div>
+                       </div>-->
+            <body-container v-for="item in items" :cost="item.cost" :x="item.x" :y="item.y" :data="item" :id="item.id"
+                            :key="item.id" :images="item.images" :main-text="item.mainText" :user-name="item.userName"
+                            :user-image="item.userImage" :address="item.address" :time="item.time"></body-container>
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                plus.webview.close(w ,'slide-out-right' ,300);
+            }
+        }
+    });
+
+    var _FIND = new Vue({
+        el: '#_FIND_CONTAINER',
+        data: {
+            items: JSON.parse( window.localStorage.getItem('getMyMission') )
+            /*                    [{
+             id:1,//missionId
+             userId : 1,发布该人物的id，用于判断这是否自己的
+             images: null,//字符串，图片名不包括地址 , 或者null
+             mainText: '想找个小伙伴',
+             userImage: 'image4.jpg',
+             userName: '宁静的夏天',
+             distance: 0.00,//显示距离
+             cost: 17,//花费
+             x: 120.709838,
+             y: 27.927257,
+             address : '温州市',
+             time: 2016-07-08 22:33:00
+             }]*/
+        },
+        components: {
+            'body-container': {
+                props: ['cost', 'data', 'id', 'images', 'mainText', 'userImage', 'userName', 'time', 'x', 'y', 'address'],
+                template: '<div class="col-xs-12 body-container" >' +
+                '<div class="image-container" v-if="images != null " v-bind:style="getBodyImg"></div>' +
+                '<p class="main-text tx-p">{{mainText}}</p>' +
+                '<p class="tx-tip address">{{address}}</p>' +
+                '<div class="user-container"><div class="user-image" v-bind:style="getUserimg"></div>' +
+                '<span class="tx-inform">{{userName}}</span>' +
+                '<button type="button" class="active-btn">{{cost}}</button>' +
+                '<p class="margin_0"><span class="tx-tip">{{getDistance}}km</span>&nbsp;&nbsp;&nbsp;' +
+                '<span class="tx-tip">{{getTime}}</span></p></div></div>',
+
+                //计算属性，计算距离和时间等等
+                computed: {
+                    //注意，只能获得props下的属性
+                    getDistance: function () {
+                        return 0;
+                    },
+                    getUserimg: function () {
+                        return {backgroundImage: 'url(http://clevok.cn/other/renyi/img/user-image/' + this.userImage + ')'};
+                    },
+                    getBodyImg: function () {
+                        return {backgroundImage: 'url(http://clevok.cn/other/renyi/img/mission/' + this.images + ')'};
+                    },
+                    getTime: function () {
+                        var tipsimg = renyi.Time.getDateDiff(this.time, renyi.Time.getNowFormatDate());//保存的时间格式time还是日期+时间
+                        return tipsimg + '前';
+                    }
+                }
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>

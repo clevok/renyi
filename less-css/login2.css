@@ -1,0 +1,81 @@
+.logo {
+    width: 60px;
+    display: block;
+    margin: 40px auto 15px;
+}
+.login_title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 100;
+    margin: 20px auto 10px;
+}
+.login_infrom {
+    text-align: center;
+    padding: 0 20px;
+    font-size: 1.6rem;
+    margin: 0;
+}
+.border-none {
+    letter-spacing: 1px;
+    border-style: none;
+    outline: none;
+    font-family: Latha, 'Microsoft Yahei';
+}
+.border-bottom {
+    border-style: none none solid none !important;
+    border-color: #dbdbda;
+    border-width: 2px;
+}
+#wrap {
+    padding: 0 0 0 15px;
+}
+#wrap >.row {
+    position: relative;
+}
+.loginContent {
+    position: absolute;
+    left: 0;
+    padding: 25px 20px;
+}
+.loginFrom {
+    border: 1px solid #dbdbda;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.login-area {
+    font-family: Latha, 'Microsoft Yahei';
+    background-color: white;
+    padding: 10px 15px;
+
+}
+.login-area >.col-xs-10>input {
+    display: block;
+    width: 100%;
+
+    letter-spacing: 1px;
+    font-size: 1.3rem;
+    border-style: none;
+    outline: none;
+    font-family: Latha, 'Microsoft Yahei';
+}
+.form-login {
+    margin-top: 20px;
+    font-size: 2rem;
+    color: #b6b6b5;
+}
+.form-login-active {
+    color: #000000;
+}
+.login-btn {
+    width: 100%;
+    text-align: center;
+    background-color: white;
+    padding: 10px 0;
+    letter-spacing: 1px;
+    border-style: none;
+    outline: none;
+    font-family: Latha, 'Microsoft Yahei';
+}
+.hr {
+    text-align: center;
+}

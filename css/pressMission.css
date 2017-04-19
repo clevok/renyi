@@ -1,0 +1,50 @@
+.active-btn {
+    border: 2px solid black;
+    background-color: white;
+    font-family: 'Microsoft Yahei';
+    margin: 8px 20px 0 0;
+    font-size: 1.4rem;
+    padding: 8px 0;
+    width: 50%;
+}
+.clearBoth {
+    clear: both;
+}
+.user-infrom {
+	list-style: none;
+	padding: 0;
+}
+.user-infrom .col-xs-3 {
+    padding: 0;
+    text-align: left;
+}
+.user-infrom .col-xs-9 {
+    text-align: left;
+}
+
+.tx-mulu {
+	margin-bottom: 5px;
+}
+.tx-title {
+	margin: 0;
+}
+.go-user-inform {
+	margin: 10px 20px 0 0;
+	float: right;
+}
+.detail-image {
+    width: 95%;
+}
+
+.address {
+    margin: 10px 0 6px 0;
+}
+.address:before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 11px;
+    margin-right: 4px;
+    background-image: url("../icon-svg/address.svg");
+    background-size: cover;
+}

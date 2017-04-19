@@ -1,0 +1,15 @@
+.publish-btn {
+    float: right;
+    margin: 9px 0 0 0;
+}
+.not-active {
+    border-color: #C0C0C0!important;
+    color: #C0C0C0;
+}
+.textarea-edit {
+    border: none;
+    outline: none;
+    width: 90%;
+    height: 100px;
+    resize:none
+}

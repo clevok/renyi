@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/appraise.css" />
+    <link rel="stylesheet" href="less-css/public.css" />
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" key="save"></button>
+    </header>
+    <div class="row clear_margin_right" id="_EDIT_WRAP">
+        <div class="col-xs-12">
+            <button type="button" v-if="message.length < 5" class="publish-btn btn not-active">发布</button>
+            <button type="button" v-else class="publish-btn btn" @click="setCommend">发布</button>
+            <h4 class="tx-nav">APPRAISE</h4>
+            <small class="tx-inform">对他的评价</small>
+        </div>
+        <div class="col-xs-12 _APPRAISE_CONTAINER" id="_APPRAISE_CONTAINER">
+            <form id="editFrom" method="post" name="form" >
+                <textarea name="textarea"  v-model="message" placeholder="最少5个字..." class="textarea-edit"></textarea>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+    if (location.search.indexOf("?") != -1) {
+        var orderId = parseInt( location.search.substr(1) ,10);
+    }else {
+    	alert('出错，请关闭页面');
+    }
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                plus.nativeUI.actionSheet( {title:"确认放弃评价?",cancel:"留下",buttons:[{title:"离开"}]}, function(e){
+                    if( e.index == 1 ) {
+
+                        var w = plus.webview.currentWebview();//获取我这个窗口
+                        plus.webview.close(w ,'slide-out-right' ,300);
+                    }
+                });
+            }
+        }
+    });
+
+    var EDIT = new Vue({
+        el: '#_EDIT_WRAP',
+        data: {
+            message : ''//信息
+        },
+        methods : {
+
+            //发布评价
+            setCommend : function () {
+
+                var self = this;
+                plus.nativeUI.showWaiting( "发布评价中..." );
+
+                renyi.ajax({
+                    url : 'http://120.27.38.110/other/renyi/userAct.php',
+                    type : 'post',
+                    data : {
+                        type    : 'setAppraise',
+                        orderId : orderId,
+                        message : this.message
+                    },
+                    success : function (data) {
+                        var _JSON_DATA = JSON.parse(data);
+
+                        plus.nativeUI.toast( _JSON_DATA['msg'] );
+                        plus.nativeUI.closeWaiting();//关闭等待
+
+                        //关闭评论
+                        var w = plus.webview.currentWebview();//获取我这个窗口
+                        plus.webview.close(w ,'slide-out-right' ,300);
+
+                    },
+                    error : function (data) {
+                        plus.nativeUI.closeWaiting();//关闭等待
+                        alert('error'+data);
+                    }
+                });
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>

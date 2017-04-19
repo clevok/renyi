@@ -1,0 +1,73 @@
+
+._EDIT_CONTAINER{
+    padding: 20px 0 0 15px;
+    position: relative;
+}
+.image-container {
+	max-height: 250px;
+	overflow: hidden;
+	padding-right: 15px;
+}
+.edit-img {
+	display: block;
+	width: 100%;
+}
+.textarea-edit {
+	border: none;
+	outline: none;
+	width: 90%;
+	height: 100px;
+	resize:none
+} 
+.textarea-edit:focus+ .bar-footer{
+	/*bottom : 0;*/
+}
+.bar-footer {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0; 
+	background-color: #e0e0e0;
+}
+.bar-footer>div {
+	padding: 5px 0 3px 0;
+	text-align: center;
+}
+
+.not-active {
+	border-color: #C0C0C0!important;
+	color: #C0C0C0;
+}
+.address,.money {
+	line-height: 30px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.address:before,.money:before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("../icon-svg/address.svg");
+    background-size: cover;
+    margin-top: 5px;
+	vertical-align: top;
+}
+.money:before {
+	background-image: url("../icon-svg/money.svg");
+}
+.amount {
+	min-width: 50px;
+	position: fixed;
+	text-align: center;
+	right: 5px;
+	padding: 5px 10px!important;
+	bottom: 45px;
+	border-radius: 45px;
+	background-color: inherit;
+}
+.amount:before {
+	content: '佣金';
+	font-size: 1rem;
+	vertical-align: middle;
+}

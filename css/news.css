@@ -1,0 +1,39 @@
+.news-container {
+    padding: 20px 0 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+.user-image {
+    width: 70px;
+    height: 70px;
+    background-color: #bdbdbd;
+    float: right;
+    margin-left: 20px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+    
+    background-image: url("../img/mission/image2.jpg");
+}
+.active-btn {
+    border: 2px solid black;
+    font-size: 1.2rem;
+    background-color: white;
+    float: left;
+    font-family: 'Microsoft Yahei';
+    margin: 8px 0 0 0;
+}
+.inprogress {
+	color: #00b38a;
+	border-color: #00b38a;
+}
+.news-time:before {
+	content: '';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-image: url("../icon-svg/time.svg");
+    background-size: cover;
+    margin-right: 5px;
+    margin-top: 0;
+	vertical-align: top;
+}

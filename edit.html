@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/edit.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css" />
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" key="save"></button>
+    </header>
+    <div class="row clear_margin_right" id="_EDIT_WRAP">
+        <div class="col-xs-12">
+        	<button type="button" v-if="message.length < 6" class="publish-btn btn not-active">发布</button>
+        	<button type="button" v-else class="publish-btn btn" @click="upload">发布</button>
+            <h4 class="tx-nav">EDIT</h4>
+            <small class="tx-inform">发布你的需求</small>
+        </div>
+        <div class="col-xs-12 _EDIT_CONTAINER" id="_EDIT_CONTAINER">
+        	<form id="editFrom" method="post" name="form" enctype="multipart/form-data">
+        		<textarea name="textarea"  v-model="message" placeholder="编写你的需求..." class="textarea-edit"></textarea>
+        		
+        		<div class="bar-footer"> 
+			        <div class="col-xs-3" @click="galleryImg" > 
+			            <span class="glyphicon glyphicon-images"></span>
+			        </div>
+			        <div class="col-xs-6 tx-tip address">
+                        {{address}}
+                   </div>
+			        <div class="col-xs-3 money" >
+						{{userAmount}}
+                    </div>
+                    <div class="amount" @click="setAmount">
+                    	{{cost}}
+                    </div>
+			    </div>
+			</form>
+        	<div class="image-container" id="_IMAGES">
+        		<img v-if="uploadimage != null" :src="uploadimage" class="edit-img">
+        		<!--<img src="img/image4.jpg" class="edit-img">-->
+        	</div>
+        </div>
+    </div>
+</div>
+<div id="map"></div>
+
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    var _IMAGES = document.getElementById('_IMAGES');
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                plus.nativeUI.actionSheet( {title:"确认放弃发布?",cancel:"留下",buttons:[{title:"离开"}]}, function(e){
+                    if( e.index == 1 ) {
+
+                        var w = plus.webview.currentWebview();//获取我这个窗口
+                        plus.webview.close(w ,'slide-out-right' ,300);
+                    }
+                });
+            }
+        }
+    });
+
+    var EDIT = new Vue({
+        el: '#_EDIT_WRAP',
+        data: {
+        	address : localStorage.getItem('address'),
+        	message : '',//信息
+        	uploadimage : null,//本地图片地址
+			userAmount : parseFloat(localStorage.getItem('userAmount') ,10),//用户的资金
+			cost : 1,//佣金
+			
+            STATIC_img : false,//是否已上传过
+            VALUE_IMG : 'null'//保存上传过的图片
+        },
+        methods : {
+        	//设置佣金
+        	setAmount : function () {
+        		var self = this;
+      			plus.nativeUI.prompt( "输入你的报酬", function(e){
+      			     
+      			    if(e.index == 0) {
+      			    	
+      			    	//除了小数点和数字
+      			    	var mycost = parseFloat( e.value.replace(/[^0-9.]/ig,"") );
+      			    	if(self.userAmount < mycost) {
+      			    		plus.nativeUI.toast( "佣金超过了你所拥有的时光币");
+      			    	}else {
+      			    		self.cost = mycost;
+      			    	}
+      			        console.log(e.value);
+                    }else {
+                        console.log('取消')
+                    }
+				},"", "请输入数字", ["确认","取消"]);
+        	},
+        	//选择图片
+            galleryImg : function () {
+            	var self = this;
+            	// 从相册中选择图片
+		        //console.log("从相册中选择图片:");
+		        plus.gallery.pick( function(path){
+		            self.uploadimage = path;
+		            //_IMAGES.appendChild( _img);
+		            //createUpload(path) 
+		        }, function ( e ) {
+		            //alert( "取消选择图片" );
+		        }, {filter:"image"} );
+            },
+            upload : function () {
+                var self = this;
+                plus.nativeUI.actionSheet( {title:"确认发布",cancel:"取消",buttons:[{title:"发布"}]}, function(e){
+                    if( e.index == 1 ) {
+
+                        if(self.cost == null || (typeof self.cost != 'number') ) {
+                            self.setAmount();
+                            return;
+                        }
+                        //添加了图片
+                        if(self.uploadimage != null) {
+
+                            //如果图片已上传
+                            if(self.STATIC_img) {
+                                self.setMission();
+                            }else {
+                                self.createUpload();
+                            }
+                        }else{
+                            self.setMission();
+                        }
+                    }
+                });
+            },
+            createUpload : function () {
+                var _SER_img = null,
+                    self     = this;
+                //如果有图片
+                if(this.uploadimage != null) {
+                    var task = plus.uploader.createUpload( "http://clevok.cn/other/renyi/action.php",
+                            { method:"POST",blocksize:204800,priority:100 },
+                            function ( t, status ) {
+                                // 上传完成
+                                if ( status == 200 ) {
+                                    var _JSON = JSON.parse(t.responseText);
+
+                                    //上传成功
+                                    if(_JSON['static'] == 0) {
+                                        _SER_img = _JSON['pic'];
+                                        self.VALUE_IMG = _SER_img;
+                                        self.STATIC_img = true;//已上传图片
+                                        self.setMission();
+
+                                        plus.nativeUI.closeWaiting();//关闭等待
+                                    }else {
+                                        //上传失败
+                                        plus.nativeUI.showWaiting( _JSON['msg'] );
+                                        plus.nativeUI.closeWaiting();//关闭等待
+                                    }
+
+                                } else {
+                                    alert( "Upload failed: " + status );
+                                    plus.nativeUI.closeWaiting();//关闭等待
+                                }
+                            }
+                    );
+                    task.addFile( this.uploadimage, {key:"images"} );//上传文件
+                    task.addData( "url", 'img/mission/' );//发送数据，后台根据$_POST['missionImage']获取
+                    task.addData( "type", 'mission' );
+                    //task.addEventListener( "statechanged", onStateChanged, false );
+                    task.start();//开始上传
+                    plus.nativeUI.showWaiting( "上传图片中..." );
+                }else {
+                    this.setMission(_SER_img)
+                }
+            },
+            setMission : function () {
+            	var self = this;
+                plus.nativeUI.showWaiting( "发布任务中..." );
+                renyi.ajax({
+                    url : 'http://120.27.38.110/other/renyi/userAct.php',
+                    type : 'post',
+                    data : {
+                        type         : 'setMission',
+                        userid       : window.localStorage.getItem('userId'),
+                        x            : window.localStorage.getItem('x'),
+                        y            : window.localStorage.getItem('y'),
+                        message      : this.message,
+                        imageaddress : this.VALUE_IMG,
+                        cost         : this.cost,
+                        address      : this.address
+                    },
+                    success : function (data) {
+                        var _JSON = JSON.parse(data);
+						
+						//发布成功
+                        if(_JSON['static'] == 1) {
+                        	window.localStorage.setItem('userAmount', (self.userAmount-self.cost) );
+                            plus.nativeUI.closeWaiting();//关闭等待
+
+                            var w = plus.webview.currentWebview();//获取我这个窗口
+                            plus.webview.close(w ,'slide-out-right' ,300);
+                        }else {
+                            plus.nativeUI.closeWaiting();//关闭等待
+                            plus.nativeUI.showWaiting( _JSON['msg'] );
+                            (function () {
+                                var settime = setTimeout(function () {
+                                    plus.nativeUI.closeWaiting();//关闭等待
+                                    clearTimeout(settime);
+                                    settime = null;
+                                }, 2000)
+                            })()
+                        }
+
+                    },
+                    error : function (data) {
+                        plus.nativeUI.closeWaiting();//关闭等待
+                        alert('error'+data);
+                    }
+                });
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>

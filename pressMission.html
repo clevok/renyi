@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css" />
+    <link rel="stylesheet" href="css/pressMission.css" />
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" key="save"></button>
+    </header>
+    <div class="row clear_margin_right">
+        <div class="col-xs-12">
+            <h4 class="tx-nav">MISSION</h4>
+            <small class="tx-inform">正在进行 </small>
+        </div>
+        <div class="col-xs-12 _PressMission_CONTAINER" id="_PressMission_CONTAINER">
+            <button @click="setPressMission" v-if="infrom.userId == localStorage.getItem('userId')" class="active-btn">确认完成</button>
+            <!--<ul class="user-infrom">
+                <li><hr></li>
+                <li>
+                    <p class="tx-mulu">内容摘要</p>
+                    <p></p>
+                    <span class="col-xs-3 tx-title">任务详情</span>
+                    <span class="col-xs-9 tx-p"> clevok</span>
+                    <span class="col-xs-3 tx-title">佣金</span>
+                    <span class="col-xs-9 tx-p"> 20</span>
+                    <div class="clearBoth"></div>
+                </li>
+                <li><hr></li>
+                <li>
+                	<span class="glyphicon glyphicon-goright-gray go-user-inform"></span>
+                    <p class="tx-mulu">发起人</p>
+                    <p></p>
+                    <span class="col-xs-3 tx-title">姓名</span>
+                    <span class="col-xs-9 tx-p"> clevok</span>
+                    <p></p>
+                    <span class="col-xs-3 tx-title">联系方式</span>
+                    <span class="col-xs-9 tx-p"> 15088910789</span>
+                    <div class="clearBoth"></div>
+                </li>
+                <li><hr></li>
+                <li>
+                	<span class="glyphicon glyphicon-goright-gray go-user-inform"></span>
+                    <p class="tx-mulu">参与者</p>
+                    <p></p>
+                    <span class="col-xs-3 tx-title">姓名</span>
+                    <span class="col-xs-9 tx-p"> clevok</span>
+                    <p></p>
+                    <span class="col-xs-3 tx-title">联系方式</span>
+                    <span class="col-xs-9 tx-p"> 15088910789</span>
+                    <div class="clearBoth"></div>
+                </li>
+                <li><hr></li>
+                <li>
+                    <img src="img/mission/image2.jpg" class="detail-image">
+					<p class="tx-inform address">地址 ：浙江温州江南皮革厂</p>
+                </li>
+            </ul>-->
+            <pression :id="infrom.id" :user-id="infrom.userId" :be-user-id="infrom.beUserId" :user-name="infrom.userName" :user-phone="infrom.userPhone" :be-user-name="infrom.beUserName" :be-user-phone="infrom.beUserPhone" :cost="infrom.cost" :address="infrom.address" :images="infrom.images" :time="infrom.time" :main-text="infrom.mainText" ></pression>
+
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                plus.webview.close(w ,'slide-out-right' ,300);
+            }
+        }
+    });
+
+    new Vue({
+        el: '#_PressMission_CONTAINER',
+        data: {
+            infrom : JSON.parse( window.localStorage.getItem('_PRESSMISSION') )
+        },
+        methods : {
+
+            //确认完成
+            setPressMission : function () {
+            	var self = this;
+                plus.nativeUI.actionSheet( {title:"确认完成后你的佣金将会打到对方账户上",cancel:"取消",buttons:[{title:"确认"}]}, function(e){
+
+                    if(e.index == 1) {
+                        plus.nativeUI.showWaiting( "确认中..." );
+
+                        renyi.ajax({
+                            url : 'http://120.27.38.110/other/renyi/userAct.php',
+                            type : 'post',
+                            data : {
+                                type : 'setOrderDone',
+                                userId : parseInt(localStorage.getItem('userId'), 10),
+                                orderId : self.infrom.id
+                            },
+                            success : function (data) {
+                                plus.nativeUI.closeWaiting();//关闭等待
+                                var _JSON_DATA = JSON.parse(data);
+
+                                plus.nativeUI.toast( _JSON_DATA['msg'] );
+
+                                //确定成功 跳转到评论页面
+                                if(_JSON_DATA['static'] == 1) {
+                                    renyi.webView.create('_APPRAISE', 'appraise.html?'+self.infrom.id, {typeShow : 'slide-in-right' ,timeOut : 1, hideLeft : '0px', duration :300});
+                                    var w = plus.webview.currentWebview();//获取我这个窗口
+                                    plus.webview.close(w ,'slide-out-right' ,300);
+                                }
+                            },
+                            error : function (data) {
+                                plus.nativeUI.closeWaiting();//关闭等待
+                                alert('请求已完成的任务失败'+data);
+                            }
+                        });
+                    }
+                });
+            }
+        },
+        components : {
+            'pression' : {
+                props    : ['id', 'userId', 'beUserId', 'userName', 'beUserName', 'userPhone', 'beUserPhone', 'cost', 'address', 'images', 'time', 'mainText'],
+                template : '<ul class="user-infrom">'+
+                                '<li><img v-if="images != null" :src="getBodyImg" class="detail-image">'+
+                                '<p class="tx-inform address">地址 ：{{address}}</p></li>'+
+                                '<li><hr></li>'+
+                                '<li><p class="tx-mulu">内容摘要</p>'+
+                                '<p></p><span class="col-xs-3 tx-title">任务详情</span>'+
+                                '<span class="col-xs-9 tx-p"> {{mainText}}</span>'+
+                                '<span class="col-xs-3 tx-title">佣金</span>'+
+                                '<span class="col-xs-9 tx-p"> {{cost}}</span>'+
+                                '<span class="col-xs-3 tx-title">时间</span>'+
+                                '<span class="col-xs-9 tx-p"> {{time}}</span>'+
+                                '<div class="clearBoth"></div>'+
+                                '</li><li><hr></li><li @click="opendFriendUser">'+
+                                '<span class="glyphicon glyphicon-goright-gray go-user-inform"></span>'+
+                                '<p class="tx-mulu">发起人</p><p></p>'+
+                                '<span class="col-xs-3 tx-title">姓名</span>'+
+                                '<span class="col-xs-9 tx-p"> {{userName}}</span>'+
+                                '<p></p><span class="col-xs-3 tx-title">联系方式</span>'+
+                                '<span class="col-xs-9 tx-p"> {{userPhone}}</span>'+
+                                '<div class="clearBoth"></div></li>'+
+                                '<li><hr></li><li @click="opendFriendBeUser">'+
+                                '<span class="glyphicon glyphicon-goright-gray go-user-inform"></span>'+
+                                '<p class="tx-mulu">参与者</p><p></p>'+
+                                '<span class="col-xs-3 tx-title">姓名</span>'+
+                                '<span class="col-xs-9 tx-p"> {{beUserName}}</span><p></p>'+
+                                '<span class="col-xs-3 tx-title">联系方式</span>'+
+                                '<span class="col-xs-9 tx-p"> {{beUserPhone}}</span>'+
+                                '<div class="clearBoth"></div></li><li><hr></li>'+
+                                '</ul>',
+/*                template : '<ul class="user-infrom"><li>'+
+                                    '<span class="glyphicon glyphicon-goright-gray go-user-inform"></span>'+
+                                    '<p class="tx-mulu">发起人 : {{userName}}</p>'+
+                                    '<p class="tx-p">联系方式 : {{userPhone}}</p></li><li><hr></li>'+
+                                    '<li><span class="glyphicon glyphicon-goright-gray go-user-inform"></span>'+
+                                    '<p class="tx-mulu">参与者 : {{beUserName}}</p>'+
+                                    '<p class="tx-p">联系方式 : {{beUserPhone}}</p></li><li><hr></li>'+
+                                    '<img v-if="images != null" :src="getBodyImg" class="detail-image">'+
+                                    '<p class="tx-inform address">地址 ：{{address}}</p>'+
+                                    '<li><p class="tx-p">{{mainText}}</p>'+
+                                    '<p class="tx-p">佣金 : {{cost}}</p>'+
+                                    '<p class="tx-p">时间 : {{time}}</p>'+
+                                    '</li></ul>',*/
+                computed : {
+                    getBodyImg : function () {
+                        return 'http://120.27.38.110/other/renyi/img/mission/'+this.images;
+                    }
+                },
+                methods : {
+                    opendFriendUser : function () {
+                        window.localStorage.setItem('friendId', this.userId);
+                        window.localStorage.setItem('friendName', this.userName);
+                        this.localUrl();
+                    },
+                    opendFriendBeUser : function () {
+                        window.localStorage.setItem('friendId', this.beUserId);
+                        window.localStorage.setItem('friendName', this.beUserName);
+                        this.localUrl();
+                    },
+                    localUrl : function () {
+
+                        renyi.webView.create('_FRIENDS', 'friends.html', {
+                            typeShow: 'slide-in-right',
+                            timeOut: 1,
+                            hideLeft: '0px',
+                            duration: 300
+                        })
+                    }
+                }
+
+            }
+        }
+    });
+</script>
+</body>
+</html>

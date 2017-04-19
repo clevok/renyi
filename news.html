@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css" />
+    <link rel="stylesheet" href="css/news.css" />
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback glyphicon glyphicon-goright" @click="goback" v-if="nav" key="save"></button>
+        <button class="goback glyphicon glyphicon-goleft" @click="goback" v-else key="edit"></button>
+    </header>
+    <div class="row clear_margin_right">
+        <div class="col-xs-12">
+            <h4 class="tx-nav">NEWS</h4>
+            <small class="tx-inform">通知</small>
+        </div>
+        <div class="col-xs-12 _NEWS_CONTAINER" id="_NEWS_CONTAINER">
+
+            <!--正在进行-->
+            <news-container v-for="item in inProgress" :data="item" :key="item.id" :status="true" :images="item.images" :time="item.time" :main-text="item.mainText" ></news-container>
+
+            <!--已完成-->
+            <news-container v-for="item in completed" :data="item" :key="item.id" :status="false" :images="item.images" :time="item.time" :main-text="item.mainText" ></news-container>
+
+
+<!--            <div class="col-xs-12 news-container">
+                <div class="user-image"></div>
+                <p class="tx-p margin_0">有人来一起玩耍吗有人来...</p>
+                <p class="news-time tx-inform margin_0">一小时前</p>
+                <button type="button" class="active-btn inprogress">正在进行中</button>
+            </div>
+            
+            <div class="col-xs-12 news-container">
+                <div class="user-image"></div>
+                <p class="tx-p margin_0">有人来一起玩耍吗有人来...</p>
+                <p class="news-time tx-inform margin_0">一小时前</p>
+                <button type="button" class="active-btn">已完成</button>
+            </div>-->
+            
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    //localStorage.setItem('userId', 1);
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            goback : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                if(this.nav) {
+                    this.nav = false;
+                    w.setStyle({
+                        left:'60px' ,
+                        transition:{duration:'250', timingfunction: "ease-in"}
+                    });
+                }else {
+                    this.nav = true;
+                    w.setStyle({
+                        left:'0',
+                        transition:{duration:'250', timingfunction: "ease-in"}
+                    });
+                }
+            }
+        }
+    });
+
+    var _NEWS = new Vue({
+        el: '#_NEWS_CONTAINER',
+        data: {
+            //正在进行中
+            inProgress : [
+/*                {
+                    id       : 1,//orderId,这是orderId
+                	userId	 : 1,
+                    userName : '',
+                    userPhone : 15088910789,
+
+                	beUserId : 2,
+                    beUserName : '',
+                    beUserPhone : 110,
+
+                    cost     : 17,
+                    address  : '浙江温州职业技术学院',
+                    images   : 'image2.jpg',//或者为null
+                    time     : '2017-03-30 07:25:24',
+                    mainText : '你好，我们一起来玩吧'
+                }*/
+            ],
+
+            //已完成
+            completed  : [
+/*                {
+                    id       : 3,//orderDoneId
+                    userId	 : 1,
+                    userName : '',
+                    beUserId : 2,
+                    beUserName : '',
+                    cost     : 18,
+                    address  : '浙江温州职业技术学院',
+                    images   : 'image4.jpg',
+                    time     : '2017-04-01 08:25:24',
+                    mainText : '我是已完成的'
+                }*/
+            ]
+        },
+        components : {
+            'news-container' : {
+                props    : ['status', 'images', 'time', 'mainText','data'],
+                template : '<div class="col-xs-12 news-container" @click="openDetails">'+
+                                '<div class="user-image" v-if="images != null " v-bind:style="getBodyImg"></div>'+
+                                '<p class="tx-p margin_0">{{getMessage}}</p>'+
+                                '<p class="news-time tx-inform margin_0">{{getTime}}</p>'+
+                                '<button type="button" class="active-btn" v-bind:class="{ inprogress: status }">{{textStatus}}</button>'+
+                                '</div>',
+                data : function () {
+                    var textStatus = null;
+                    if(this.status) {
+                        textStatus = '正在进行中'
+                    }else {
+                        textStatus = '已完成'
+                    }
+                    return { textStatus:textStatus }
+                },
+                computed : {
+                    getBodyImg : function () {
+                        return { backgroundImage : 'url(http://120.27.38.110/other/renyi/img/mission/'+this.images+')'};
+                    },
+                    getMessage : function () {
+                        var str = this.mainText;
+                        if(str.length > 12) {
+                            return str.substring(0,12)+'...';
+                        }else {
+                            return str;
+                        }
+                    },
+                    getTime : function () {
+                        var tipsimg;
+                        if(this.status) {
+                            tipsimg = renyi.Time.getDateDiff(this.time , renyi.Time.getNowFormatDate()) + '前';
+                        }else {
+                            tipsimg = this.time;
+                        }
+
+                        //保存的时间格式time还是日期+时间
+                        return tipsimg;
+                    }
+                },
+                methods : {
+                    openDetails : function () {
+
+                        //正在进行中
+                        if(this.status) {
+                            window.localStorage.setItem('_PRESSMISSION', JSON.stringify(this.data));
+                            renyi.webView.create('_PRESSION_MISSION', 'pressMission.html', {typeShow : 'slide-in-right' ,timeOut : 1, hideLeft : '0px', duration :300});
+                        }else {
+                            alert('已完成');
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    var _WS = null;
+    if(window.plus){
+        plusReady();
+    }else{
+        document.addEventListener("plusready",plusReady,false);
+    }
+
+    function plusReady(){
+        _WS=plus.webview.currentWebview();
+        _WS.setPullToRefresh({support:true,
+        	style : "circle",
+            height:"50px",
+            range:"200px",
+            contentdown:{
+                caption:"下拉刷新"
+            },
+            contentover:{
+                caption:"释放刷新"
+            },
+            contentrefresh:{
+                caption:"正在刷新..."
+            }
+        },Newsajax);
+    }
+    Newsajax();
+
+	function Newsajax () {
+
+        renyi.ajax({
+//        url : 'http://localhost/renyi/getMission.php',
+            url : 'http://120.27.38.110/other/renyi/getMission.php',
+            type : 'get',
+            data : {
+                type : 'get_press_mission',
+                userId : parseInt(localStorage.getItem('userId'), 10)
+            },
+            success : function (data) {
+                _NEWS.inProgress =  JSON.parse( data );
+
+
+                //开始请求已完成的
+                renyi.ajax({
+//                url : 'http://localhost/renyi/getMission.php',
+                    url : 'http://120.27.38.110/other/renyi/getMission.php',
+                    type : 'get',
+                    data : {
+                        type : 'get_completed_mission',
+                        userId : parseInt(localStorage.getItem('userId'), 10)
+                    },
+                    success : function (data) {
+                        _NEWS.completed =  JSON.parse( data );
+                        _WS.endPullToRefresh();
+                    },
+                    error : function (data) {
+                        alert('请求已完成的任务失败'+data);
+                        _WS.endPullToRefresh();
+                    }
+                });
+            },
+            error : function (data) {
+                _WS.endPullToRefresh();
+                alert('请求正在进行中的任务失败'+data);
+            }
+        });
+	}
+
+
+</script>
+</body>
+</html>

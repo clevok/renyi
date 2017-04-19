@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css" />
+    <link href="css/personal.css" rel="stylesheet">
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback glyphicon glyphicon-goright" @click="goback" v-if="nav" key="save"></button>
+        <button class="goback glyphicon glyphicon-goleft" @click="goback" v-else key="edit"></button>
+    </header>
+    <div class="row clear_margin_right" id="_PERSONAL">
+        <div class="col-xs-12">
+            <button type="button" class="publish-btn btn " @click="setting">设置</button>
+            <h4 class="tx-nav">PERSON</h4>
+            <small class="tx-inform">我的世界</small>
+        </div>
+        <div class="col-xs-12 _PERSONAL_CONTAINER">
+            <div @click="opensettingImage" class="user-image" v-bind:style="SRC_image"></div>
+            <p class="tx-inform">{{STR_name}}</p>
+            <ul class="user-infrom">
+                <li class="col-xs-4" @click="opengetMyMission">
+                    <p class="tx-mulu margin_0">{{NUM_mission}}</p>
+                    <p class="margin_0 tx-inform">发布任务</p>
+                </li>
+                <li class="col-xs-4" @click="opengetMyAppraise">
+                    <p class="tx-mulu margin_0">{{NUM_appraise}}</p>
+                    <p class="margin_0 tx-inform">评论</p>
+                </li>
+                <li class="col-xs-4">
+                    <p class="tx-mulu margin_0">{{NUM_amount}}</p>
+                    <p class="margin_0 tx-inform">时光币</p>
+                </li>
+                <div style="clear: both"></div>
+            </ul>
+
+            <h4 class="tx-nav bottom-nav">MY FRIENDS</h4>
+            <small class="tx-inform">近期往来</small>
+            <div class="my-mission col-xs-12">
+
+                <div class="mission-content" v-for="item in Iappraise">
+                    <div class="content-image" v-bind:style="{ backgroundImage : 'url(http://clevok.cn/other/renyi/img/user-image/'+ item.imgSrc +')' }"></div>
+                    <p class="tx-inform">{{item.userName}}</p>
+                </div>
+<!--                <div class="mission-content">
+                	<div class="mission-more"></div>
+                </div>-->
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            goback : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                if(this.nav) {
+                    this.nav = false;
+                    w.setStyle({
+                        left:'60px' ,
+                        transition:{duration:'250', timingfunction: "ease-in"}
+                    });
+                }else {
+                    this.nav = true;
+                    w.setStyle({
+                        left:'0',
+                        transition:{duration:'250', timingfunction: "ease-in"}
+                    });
+                }
+            }
+        }
+    });
+
+
+    var _PERSONAL = new Vue({
+        el: '#_PERSONAL',
+        data: {
+            NUM_mission  : 0,
+            NUM_appraise : 0,
+            NUM_amount   : window.localStorage.getItem('userAmount'),
+            SRC_image    : { backgroundImage : 'url(http://clevok.cn/other/renyi/img/user-image/'+window.localStorage.getItem('userImage')+')'},
+            STR_name     : window.localStorage.getItem('userName'),
+            Iappraise    : []
+        },
+        methods : {
+
+            setting : function () {
+                renyi.webView.create('_SETTING', 'setting.html', {
+                    typeShow: 'slide-in-right',
+                    timeOut: 1,
+                    hideLeft: '0px',
+                    duration: 300
+                })
+            },
+            opengetMyMission : function () {
+                renyi.webView.create('_GETMYMISSION', 'getMyMission.html', {
+                    typeShow: 'slide-in-right',
+                    timeOut: 1,
+                    hideLeft: '0px',
+                    duration: 300
+                })
+            },
+            opengetMyAppraise : function () {
+                renyi.webView.create('_GETMYAPPRAISE', 'getMyAppraise.html', {
+                    typeShow: 'slide-in-right',
+                    timeOut: 1,
+                    hideLeft: '0px',
+                    duration: 300
+                })
+            },
+            opensettingImage : function () {
+
+                plus.nativeUI.actionSheet( {title:"重新上传头像?",cancel:"离开",buttons:[{title:"修改头像"}]}, function(e){
+                    if( e.index == 1 ) {
+
+                        renyi.webView.create('_settingImage', 'setting-image.html', {
+                            typeShow: 'slide-in-right',
+                            timeOut: 1,
+                            hideLeft: '0px',
+                            duration: 300
+                        })
+                    }
+                });
+            }
+        }
+    });
+
+    var _WS = null;
+    if (window.plus) {
+        plusReady();
+    } else {
+        document.addEventListener("plusready", plusReady, false);
+    }
+
+    function plusReady() {
+        _WS = plus.webview.currentWebview();
+        _WS.setPullToRefresh({
+            support: true,
+            style: "circle",
+            height: "50px",
+            range: "200px",
+            contentdown: {
+                caption: "下拉刷新"
+            },
+            contentover: {
+                caption: "释放刷新"
+            },
+            contentrefresh: {
+                caption: "正在刷新..."
+            }
+        }, _PERSONAL_ajax);
+    }
+
+    function _PERSONAL_ajax() {
+
+        //用户名
+        _PERSONAL.STR_name = window.localStorage.getItem('userName');
+
+        //修改头像
+        _PERSONAL.SRC_image = { backgroundImage : 'url(http://clevok.cn/other/renyi/img/user-image/'+window.localStorage.getItem('userImage')+')'};
+
+        renyi.ajax({
+            url: 'http://120.27.38.110/other/renyi/userAct.php',
+            type: 'post',
+            data: {
+                type: 'getPerson',
+                userId: parseInt(window.localStorage.getItem('userId'), 10)
+            },
+            success: function (data) {
+
+                var _JSONDATA = JSON.parse(data);
+                //时光币
+                window.localStorage.setItem('userAmount',_JSONDATA['amount']['result'] );
+                _PERSONAL.NUM_amount = window.localStorage.getItem('userAmount');
+
+                //任务
+                _PERSONAL.NUM_mission = _JSONDATA['mission']['num'];
+                window.localStorage.setItem('getMyMission', JSON.stringify( _JSONDATA['mission']['result']) );
+
+                //评论
+                _PERSONAL.NUM_appraise = _JSONDATA['appraise']['num'];
+                _PERSONAL.Iappraise    = _JSONDATA['appraise']['result'];
+                window.localStorage.setItem('getMyAppraise', JSON.stringify( _JSONDATA['appraise']['result']) );
+
+                _WS.endPullToRefresh();//关闭下拉刷新
+
+            },
+            error: function (data) {
+                alert('数据请求失败' + data);
+                _WS.endPullToRefresh();//关闭下拉刷新
+            }
+        });
+    }
+    _PERSONAL_ajax();
+
+</script>
+</body>
+</html>

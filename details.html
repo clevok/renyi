@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/find.css" rel="stylesheet">
+    <link rel="stylesheet" href="less-css/public.css" />
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" key="save"></button>
+    </header> 
+    <div class="row clear_margin_right">
+        <div class="col-xs-12">
+            <h4 class="tx-nav">DETAIL</h4>
+            <small class="tx-inform">展示详情 </small>
+        </div>
+        <div class="col-xs-12 _DETAILS_CONTAINER" id="_DETAILS_CONTAINER">
+<!--                        <div class="col-xs-12 body-container">
+                            <img src="img/image2.jpg" class="detail-image">
+
+                            <p class="main-text tx-p">hello i want e background color
+                                hello i want e background color
+                            </p>
+                            <p class="tx-tip address">address</p>
+                            <div class="user-container">
+                                <div class="user-image"></div>
+                                <span class="tx-inform">json</span>
+                                <p class="margin_0">
+                                    <span class="tx-tip">1377km</span>&nbsp;&nbsp;&nbsp;
+                                    <span class="tx-tip">7小时前</span>
+                                </p>
+                            </div>
+                            <button type="button" class="detail-active-btn">抢单</button>
+                        </div>-->
+            <body-container :id="item.id" :key="item.id" :images="item.images" :user-id="item.userId" :main-text="item.mainText" :user-name="item.userName" :user-image="item.userImage" :distance="item.distance" :address="item.address" :time="item.time"></body-container>
+
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                plus.webview.close(w ,'slide-out-right' ,300);
+            }
+        }
+    });
+
+    var url = JSON.parse( window.localStorage.getItem('_DETAIL') );
+    new Vue({
+        el: '#_DETAILS_CONTAINER',
+        data: {
+            item: url
+        },
+        methods : {
+            close : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                plus.webview.close(w ,'slide-out-right' ,300);
+            }
+        },
+        components : {
+            'body-container' : {
+                props : ['userId','id','images', 'mainText', 'userImage', 'userName', 'distance', 'time', 'address'],
+                template : '<div class="col-xs-12 body-container">' +
+                                '<img class="detail-image" v-if="images != null " :src="detailImg">'+
+                                '<p class="main-text tx-p">{{mainText}}</p>'+
+                                '<p class="tx-tip address">{{address}}</p>'+
+                                '<div @click="opendFriendUser" class="user-container"><div class="user-image" v-bind:style="userImg"></div>'+
+                                '<span class="tx-inform">{{userName}}</span>'+
+                                '<p class="margin_0"><span class="tx-tip">{{distance}}km</span>&nbsp;&nbsp;&nbsp;'+
+                                '<span class="tx-tip">{{dataTime}}</span></p></div>'+
+                                '<button type="button" v-if="myId" class="detail-active-btn" @click="setPressMission" >抢单</button></div>',
+
+                data : function () {
+                	var myid = true;
+					if(this.userId == localStorage.getItem('userId')) {
+						myid = false;
+					}
+                    //这里可以获取传入到props中的数据time
+                    return {
+                        myId      : myid,
+                        detailImg : 'http://clevok.cn/other/renyi/img/mission/' + this.images,
+                        dataTime  : this.time,
+                        userImg   : { backgroundImage : 'url(http://clevok.cn/other/renyi/img/user-image/'+this.userImage+')'}
+                    }
+                },
+                methods : {
+                    setPressMission : function () {
+                        var self = this;
+		                plus.nativeUI.actionSheet( {cancel:"取消",buttons:[{title:"确定抢单"}]}, function(e){
+
+		                    if(e.index == 1) {
+                                renyi.ajax({
+                                    url : 'http://120.27.38.110/other/renyi/userAct.php',
+                                    type : 'post',
+                                    data : {
+                                        type : 'setPressMission',
+                                        userId : parseInt(localStorage.getItem('userId'), 10),
+                                        missionId : self.id
+                                    },
+                                    success : function (data) {
+                                        var _JSON_DATA = JSON.parse(data);
+
+                                        plus.nativeUI.toast( _JSON_DATA['msg'] );
+                                        var w = plus.webview.currentWebview();//获取我这个窗口
+                                        plus.webview.close(w ,'slide-out-right' ,300);
+                                    },
+                                    error : function (data) {
+                                        alert('请求已完成的任务失败'+data);
+                                    }
+                                });
+		                    }
+		                } );
+                    },
+                    opendFriendUser : function () {
+                        window.localStorage.setItem('friendId', this.userId);
+                        window.localStorage.setItem('friendName', this.userName);
+                        renyi.webView.create('_FRIENDS', 'friends.html', {
+                            typeShow: 'slide-in-right',
+                            timeOut: 1,
+                            hideLeft: '0px',
+                            duration: 300
+                        })
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

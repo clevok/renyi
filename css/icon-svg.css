@@ -1,0 +1,52 @@
+.glyphicon {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    background-size: cover;
+}
+
+.glyphicon-house {
+    background-image: url("../icon-svg/house.svg");
+}
+.glyphicon-house-active {
+    background-image: url("../icon-svg/house-active.svg");
+}
+.glyphicon-user {
+    background-image: url("../icon-svg/user.svg");
+}
+.glyphicon-user-active {
+    background-image: url("../icon-svg/user-active.svg");
+}
+.glyphicon-message {
+    background-image: url("../icon-svg/message.svg");
+}
+.glyphicon-message-active {
+    background-image: url("../icon-svg/message-active.svg");
+}
+.glyphicon-goleft {
+    background-image: url("../icon-svg/goleft.svg");
+}
+.glyphicon-goright {
+    background-image: url("../icon-svg/goright.svg");
+}
+.glyphicon-goright-gray {
+    background-image: url("../icon-svg/goright-gray.svg");
+}
+.glyphicon-close {
+    background-image: url("../icon-svg/close.svg");
+}
+.glyphicon-exchange {
+    background-image: url("../icon-svg/exchange.svg");
+}
+.glyphicon-address {
+    background-image: url("../icon-svg/address.svg");
+}
+.glyphicon-edit {
+    background-image: url("../icon-svg/edit.svg");
+}
+.glyphicon-images {
+    background-image: url("../icon-svg/images.svg");
+}
+.glyphicon-money {
+    background-image: url("../icon-svg/money.svg");
+}

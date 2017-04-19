@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>nav</title>
+	<link href="css/icon-svg.css" rel="stylesheet">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="less-css/public.css" />
+
+	<script src="js/vue.js"></script>
+	<script src="js/fastclick.js"></script>
+	<script>
+		if ('addEventListener' in document) {
+			document.addEventListener('DOMContentLoaded', function() {
+				FastClick.attach(document.body);
+			}, false);
+		}
+	</script>
+</head>
+<body>
+<div id="body-container">
+	<nav id="nav">
+		<ul id="nav-ul">
+			<li>
+				<label>
+					<input type="radio" name="radio" class="nav-btn" value="_FIND" v-model="nav">
+					<span class="glyphicon glyphicon-house-active" v-if="nav=='_FIND'"></span>
+					<span class="glyphicon glyphicon-house" v-else ></span>
+				</label>
+			</li>
+			<li>
+				<label>
+					<input type="radio" name="radio" class="nav-btn" value="_NEWS" v-model="nav">
+					<span class="glyphicon glyphicon-message-active" v-if="nav=='_NEWS'"></span>
+					<span class="glyphicon glyphicon-message" v-else ></span>
+				</label>
+			</li>
+			<li>
+				<label>
+					<input type="radio" name="radio" class="nav-btn" value="_PERSONAL" v-model="nav">
+					<span class="glyphicon glyphicon-user-active" v-if="nav=='_PERSONAL'"></span>
+					<span class="glyphicon glyphicon-user" v-else ></span>
+				</label>
+			</li>
+		</ul>
+	</nav>
+</div>
+<script src="js/renyi.js"></script>
+<script> 
+	//localStorage.clear();
+	window.localStorage.setItem('x','120');
+	window.localStorage.setItem('y','27');
+	window.localStorage.setItem('address','浙江温州江南皮革厂');
+	document.addEventListener("plusready", function () {
+		renyi.init();
+	},false);
+
+	var srcHTML = {
+		'_FIND' : 'find.html',
+		'_NEWS' : 'news.html',
+		'_PERSONAL' : 'personal.html'
+	};
+	//对于多选按钮，需要v-model相同，获取的是不同的vaWlue
+	new Vue({
+		el: '#nav-ul',
+		data: {
+			nav : '_FIND'
+		},
+		watch : {
+			nav : function () {
+				if ( !renyi.getLogin() ) {
+					renyi.init();
+					this.nav = '_FIND';
+					return;
+				}
+
+				var wvs=plus.webview.getDisplayWebview();//获取显示的窗口
+				//alert( plus.webview.all().length ); //4
+				if(wvs.length>=2) {
+
+					//对于ios, 1是index.html,也就是当前页
+					if(wvs[1] == plus.webview.currentWebview()) {
+						renyi.webView.down( wvs[0] );//隐藏打开的页面，第一个，第二个是是index.html
+					}
+					
+					//对于安卓 0是index.html页
+					if(wvs[0] == plus.webview.currentWebview()) {
+						renyi.webView.down( wvs[wvs.length-1] );//隐藏后一个，第一个是index.html
+					}
+					//alert(this.nav);
+					renyi.webView.create( this.nav, srcHTML[this.nav], {left: '60px' , 'popGesture':'none'});//显示点击的页面
+				}
+			}
+		}
+	})
+</script>
+</body>
+</html>

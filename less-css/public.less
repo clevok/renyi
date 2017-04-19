@@ -1,0 +1,195 @@
+html {
+  font-size: 62.5%;
+  font-family: 'Microsoft Yahei';
+  padding: 0;
+  margin: 0;
+  background-color: white;
+}
+body {
+  padding: 0;
+  margin: 0;
+}
+.clear_margin_right {
+    margin-right: 0;
+}
+.margin_0 {
+  margin: 0;
+}
+@title: black;
+@infrom: rgb(146,146,145);
+@fontFamily : Latha ,'Microsoft Yahei';
+
+// 目录
+.tx-nav {
+  font-size: 2.2rem;
+  color: @title;
+  font-family: @fontFamily;
+  margin: 0.5rem 0;
+  letter-spacing: 1px;
+}
+
+// 小标题
+.tx-title {
+  font-size: 1.4rem;
+  color: @title;
+  font-family: @fontFamily;
+}
+
+//基本正文
+.tx-p {
+  font-size: 1.4rem;
+  color: @title;
+  font-family: @fontFamily;
+}
+
+//按钮
+.tx-btn {
+  font-weight: 100;
+  font-size: 1.2rem;
+  color: @title;
+  font-family: @fontFamily;
+}
+
+//姓名等介绍
+.tx-inform {
+  font-size: 1.2rem;
+  color: @infrom;
+  font-family: @fontFamily;
+}
+
+//更小一级
+.tx-tip {
+  font-size: 1rem;
+  color: @infrom;
+  font-family: @fontFamily;
+}
+
+
+.danger {
+  font-weight: 700;
+  color: #8a6d3b;
+}
+.success {
+  font-weight: 700;
+  color: #3c763d
+}
+.error {
+  font-weight: 700;
+  color: #a94442;;
+}
+// 模板容器
+#body-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+#nav-ul {
+  padding-left: 5px;
+  list-style: none;
+  padding-top: 80px;
+}
+#nav-ul>li {
+  padding: 0.6rem 0;
+}
+.nav-btn {
+  opacity: 0;
+}
+
+
+//总容器
+#wrap {
+  background-color: rgb(255, 255, 255);
+  padding: 60px 0 0 40px;
+  //overflow-x: hidden;
+}
+#header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 60px;
+  z-index: 9;
+  background-color: white;
+}
+
+.goback ,.close{
+  width: 43px;
+  height: 43px;
+
+  position: absolute;
+  left: 37px;
+  bottom: 0;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  opacity: 1;
+}
+.close {
+  width: 39px;
+  height: 39px;
+}
+//按钮
+.btn {
+    background-color: transparent;
+    border-color: black;
+    outline: none;
+    border-style: solid;
+}
+
+.transition(@function){
+  transition: @function;
+  -webkit-transition: @function;
+  -moz-transition: @function;
+  -o-transition: @function;
+  -ms-transition: @function;
+}
+.transform(@function){
+  transform: @function;
+  -webkit-transform: @function;
+  -moz-transform: @function;
+  -o-transform: @function;
+  -ms-transform: @function;
+}
+//出现过程
+.slide-fade-enter-active {
+  .transition(all .6s ease );
+}
+//消失过程
+.slide-fade-leave-active {
+  .transition(all .6s ease );
+}
+//消失状态
+.slide-fade-enter, .slide-fade-leave-active {
+  .transform( translateX(20px) );
+  opacity: 0;
+}
+
+//出现过程
+.rotate-enter-active {
+  .transition(all .6s ease );
+}
+//消失过程
+.rotate-leave-active {
+  .transition(all .6s ease );
+}
+//消失状态
+.rotate-enter, .rotate-leave-active {
+  .transform( rotate(180deg) );
+  opacity: 0;
+}
+
+#map {
+  position: absolute;
+  top: -50px;
+  width: 0;
+  height: 0;
+  left: -50px;
+  display: none;
+  z-index: -99999;
+}

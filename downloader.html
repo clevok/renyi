@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Downloader Example</title>
+    <script src="js/vue.js"></script>
+
+</head>
+<body>
+<button id="download" >Create download task</button>
+<div style="width: 100px;height: 100px;border:1px solid red" id="fff" v-bind:style="SRC_image"></div>
+<!---->
+<script src="js/renyi.js"></script>
+<script>
+    console.log(typeof {});
+    var __my = new Vue({
+        el: '#fff',
+        data : {
+        	getImage: ''
+        },
+        computed : {
+            SRC_image : function () {
+
+                var mf = '20170409170553391.JPG';
+
+                renyi.File.groupSet({
+                    fileName : mf,
+                    fileUrl  : 'userImage/',
+                    URL      : 'http://clevok.cn/other/renyi/img/user-image/'+mf
+                }, function (obj) {
+
+                });
+
+                var url="_downloads/userImage/"+mf;
+                var path=plus.io.convertLocalFileSystemURL(url);
+                return  { backgroundImage : 'url('+path+')'};
+            }
+        }
+    });
+
+
+/*      renyi.File.groupSet({
+         fileName : '20170409170553391.JPG',
+         fileUrl  : 'userImage/',
+         URL      : 'http://clevok.cn/other/renyi/img/user-image/20170409170553391.JPG'
+      }, function (obj) {
+         alert(obj.msg);
+         alert(obj.url);
+     });*/
+
+      var url="_downloads/userImage/20170409170553391.JPG";
+//      var path=plus.io.convertLocalFileSystemURL(url);
+        var c = document.getElementById('download'),
+        f = document.getElementById('fff');
+        c.onclick = function() {
+        	alert(f.style.backgroundImage);
+        }
+</script>
+</body>
+</html>

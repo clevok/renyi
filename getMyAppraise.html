@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>nav</title>
+    <link href="css/icon-svg.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/getAppraise.css"/>
+    <link rel="stylesheet" href="less-css/public.css"/>
+
+    <script src="js/vue.js"></script>
+    <script src="js/fastclick.js"></script>
+    <script>
+        if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function () {
+                FastClick.attach(document.body);
+            }, false);
+        }
+    </script>
+</head>
+<body>
+<div id="body-container"></div>
+<div id="wrap" class="container-fluid">
+    <header id="header">
+        <button class="goback close glyphicon glyphicon-close" @click="close" ></button>
+    </header>
+    <div class="row clear_margin_right">
+        <div class="col-xs-12">
+            <h4 class="tx-nav">MY APPRAISE</h4>
+            <small class="tx-inform">我的评价</small>
+        </div>
+        <div class="col-xs-12 _MYAPPRAISE_CONTAINER" id="_MYAPPRAISE_CONTAINER">
+<!--            <div class="appraise-body">
+                <div class="user-image"></div>
+                <span class="tx-inform user-name">宁静的夏天</span>
+                <span class="tx-inform time">2小时前</span>
+                <br>
+                <p class="tx-p margin_0 main-text">和哈萨克附近可拉伸的飞机开始的减肥卡萨丁附近三等奖看电视剧</p>
+            </div>-->
+
+            <body-container v-for="item in items" :user-name="item.userName" :img-src="item.imgSrc"
+                            :commend-detail="item.commendDetail" :commend-time="item.commendTime"></body-container>
+
+        </div>
+    </div>
+</div>
+<script src="js/renyi.js"></script>
+<script src="js/ready-pubilc.js"></script>
+<script>
+
+    new Vue({
+        el: '#header',
+        data: {
+            nav : false
+        },
+        methods : {
+            close : function () {
+                var w = plus.webview.currentWebview();//获取我这个窗口
+                plus.webview.close(w ,'slide-out-right' ,300);
+            }
+        }
+    });
+
+
+    var _MYAPPRAISE = new Vue({
+        el: '#_MYAPPRAISE_CONTAINER',
+        data: {
+            items: JSON.parse( window.localStorage.getItem('getMyAppraise') )
+        },
+        components: {
+            'body-container': {
+                props: ['userName', 'imgSrc', 'commendDetail','commendTime'],
+                template: '<div class="appraise-body">'+
+                                '<div class="user-image" v-bind:style="getUserimg"></div>'+
+                                '<span class="tx-title user-name">{{userName}}</span>'+
+                                '<span class="tx-inform time">{{getTime}}</span><br>'+
+                                '<p class="tx-p margin_0 main-text">{{commendDetail}}</p></div>',
+
+                //计算属性，计算距离和时间等等
+                computed: {
+                    //注意，只能获得props下的属性
+                    getUserimg: function () {
+                        return {backgroundImage: 'url(http://clevok.cn/other/renyi/img/user-image/' + this.imgSrc + ')'};
+                    },
+                    getTime: function () {
+                        var tipsimg = renyi.Time.getDateDiff(this.commendTime, renyi.Time.getNowFormatDate());//保存的时间格式time还是日期+时间
+                        return tipsimg + '前';
+                    }
+                }
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>
